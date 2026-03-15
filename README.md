@@ -188,8 +188,4 @@ http://localhost:5000
 
 ---
 
-# Author
 
-Shiva Kumar Solleti
-Computer Science and Engineering (Data Science Student)
-CMR Institute of Technology
