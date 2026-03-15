@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="text-align: center; padding: 100px 0;">
+    <h1 style="font-size: 72px; margin-bottom: 20px;">404</h1>
+    <p style="font-size: 20px; color: #9aa4b8;">Page not found</p>
+    <a href="{{ url_for('index') }}" class="btn-primary" style="margin-top: 40px; display: inline-block;">Go Home</a>
+</div>
+{% endblock %}

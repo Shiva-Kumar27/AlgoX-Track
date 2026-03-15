@@ -1,0 +1,298 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="dashboard-header">
+    <div>
+        <h1 class="dashboard-title">Profile</h1>
+        <p class="dashboard-subtitle">// {{ user.username }} · member since {{ user.created_at[:10] }}</p>
+    </div>
+</div>
+
+{% if success_msg %}
+<div style="background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.3);color:#4CAF50;
+            padding:12px 18px;border-radius:var(--radius-md);margin-bottom:24px;
+            font-size:13px;font-family:'Roboto',sans-serif;">
+    {{ success_msg }}
+</div>
+{% endif %}
+
+{% if error %}
+<div style="background:rgba(239,83,80,0.1);border:1px solid rgba(239,83,80,0.3);color:#EF5350;
+            padding:12px 18px;border-radius:var(--radius-md);margin-bottom:24px;
+            font-size:13px;font-family:'Roboto',sans-serif;">
+    ⚠ {{ error }}
+</div>
+{% endif %}
+
+<!-- Stats Overview Row -->
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px">
+    <div class="stat-card">
+        <div class="stat-label">Total Solved</div>
+        <div class="stat-value">{{ stats.total_solved or 0 }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Success Rate</div>
+        <div class="stat-value">{{ stats.success_rate or 0 }}%</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Streak</div>
+        <div class="stat-value">{{ stats.streak_days or 0 }}<span style="font-size:18px;color:var(--text-muted)"> d</span></div>
+    </div>
+    <!-- XP / Level -->
+    <div class="xp-card">
+        <div class="xp-top">
+            <div>
+                <div class="xp-level">Level</div>
+                <div class="xp-level-num">{{ level_info.level }}</div>
+            </div>
+            <span class="xp-badge">{{ achievement.name }}</span>
+        </div>
+        <div class="xp-bar-wrap">
+            <div class="xp-bar-fill" data-pct="{{ level_info.progress_pct }}" style="width:0%"></div>
+        </div>
+        <div class="xp-meta">
+            <span>{{ level_info.progress_xp }} XP</span>
+            <span>{{ level_info.needed_xp }} to next</span>
+        </div>
+    </div>
+</div>
+
+<!-- Difficulty breakdown -->
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:28px">
+    <div class="chart-card" style="height:auto;padding:24px">
+        <div class="section-title">Difficulty Breakdown</div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+            <div>
+                <div style="display:flex;justify-content:space-between;margin-bottom:5px">
+                    <span style="font-size:12px;color:var(--easy)">Easy</span>
+                    <span style="font-size:12px;font-family:'Roboto',sans-serif;color:var(--text-secondary)">{{ stats.easy_solved or 0 }}</span>
+                </div>
+                <div style="background:var(--border);border-radius:4px;height:4px">
+                    {% set total = (stats.total_solved or 1) %}
+                    <div style="width:{{ ((stats.easy_solved or 0)/total*100)|int }}%;background:var(--easy);height:100%;border-radius:4px"></div>
+                </div>
+            </div>
+            <div>
+                <div style="display:flex;justify-content:space-between;margin-bottom:5px">
+                    <span style="font-size:12px;color:var(--medium)">Medium</span>
+                    <span style="font-size:12px;font-family:'Roboto',sans-serif;color:var(--text-secondary)">{{ stats.medium_solved or 0 }}</span>
+                </div>
+                <div style="background:var(--border);border-radius:4px;height:4px">
+                    <div style="width:{{ ((stats.medium_solved or 0)/total*100)|int }}%;background:var(--medium);height:100%;border-radius:4px"></div>
+                </div>
+            </div>
+            <div>
+                <div style="display:flex;justify-content:space-between;margin-bottom:5px">
+                    <span style="font-size:12px;color:var(--hard)">Hard</span>
+                    <span style="font-size:12px;font-family:'Roboto',sans-serif;color:var(--text-secondary)">{{ stats.hard_solved or 0 }}</span>
+                </div>
+                <div style="background:var(--border);border-radius:4px;height:4px">
+                    <div style="width:{{ ((stats.hard_solved or 0)/total*100)|int }}%;background:var(--hard);height:100%;border-radius:4px"></div>
+                </div>
+            </div>
+        </div>
+
+        {% if topic_dist %}
+        <div class="section-title" style="margin-top:24px">Top Topics</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+            {% for t in topic_dist %}
+            <div style="display:flex;justify-content:space-between;align-items:center">
+                <span style="font-size:12px;color:var(--text-secondary)">{{ t.topic }}</span>
+                <span style="font-size:11px;font-family:'Roboto',sans-serif;color:var(--text-muted);
+                             background:var(--border);padding:2px 8px;border-radius:20px">{{ t.count }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Account Info Panel -->
+    <div class="chart-card" style="height:auto;padding:24px">
+        <div class="section-title">Account Info</div>
+        <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:20px">
+            <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)">
+                <span style="font-size:12px;color:var(--text-muted);font-family:'Roboto',sans-serif">USERNAME</span>
+                <span style="font-size:13px;color:var(--text-primary);font-weight:600">{{ user.username }}</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)">
+                <span style="font-size:12px;color:var(--text-muted);font-family:'Roboto',sans-serif">EMAIL</span>
+                <span style="font-size:13px;color:var(--text-secondary)">{{ user.email or '—' }}</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:10px 0">
+                <span style="font-size:12px;color:var(--text-muted);font-family:'Roboto',sans-serif">MEMBER SINCE</span>
+                <span style="font-size:13px;color:var(--text-secondary);font-family:'Roboto',sans-serif">{{ user.created_at[:10] }}</span>
+            </div>
+        </div>
+
+        <!-- Platform handles summary -->
+        <div style="margin-bottom:20px">
+            <div class="section-title" style="margin-bottom:8px">Platforms</div>
+            <div style="display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--text-secondary);font-family:'Roboto',sans-serif">
+                <div style="display:flex;justify-content:space-between">
+                    <span style="color:var(--text-muted)">LeetCode</span>
+                    <span>{{ user.leetcode_username or 'Not linked' }}</span>
+                </div>
+                <div style="display:flex;justify-content:space-between">
+                    <span style="color:var(--text-muted)">Codeforces</span>
+                    <span>{{ user.codeforces_username or 'Not linked' }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick edit buttons -->
+        <div style="display:flex;flex-direction:column;gap:8px">
+            <button onclick="toggleSection('edit-username')" class="btn-secondary" style="font-size:12px;padding:9px 16px;text-align:left">
+                Change Username
+            </button>
+            <button onclick="toggleSection('edit-email')" class="btn-secondary" style="font-size:12px;padding:9px 16px;text-align:left">
+                Change Email
+            </button>
+            <button onclick="toggleSection('edit-password')" class="btn-secondary" style="font-size:12px;padding:9px 16px;text-align:left">
+                Change Password
+            </button>
+            <button onclick="toggleSection('edit-platforms')" class="btn-secondary" style="font-size:12px;padding:9px 16px;text-align:left">
+                Link Coding Platforms
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== Inline Edit Panels ===== -->
+
+<div id="edit-username" style="display:none;margin-bottom:16px">
+    <div class="form-card" style="max-width:100%;padding:28px">
+        <div class="section-title">Change Username</div>
+        <form method="POST" style="display:flex;gap:12px;align-items:flex-end">
+            <div class="form-group" style="flex:1">
+                <label>New Username</label>
+                <input type="text" name="new_username" placeholder="{{ user.username }}"
+                       minlength="3" required value="{{ user.username }}">
+            </div>
+            <input type="hidden" name="action" value="update_username">
+            <button type="submit" class="btn-primary">Save</button>
+            <button type="button" onclick="toggleSection('edit-username')" class="btn-secondary">Cancel</button>
+        </form>
+    </div>
+</div>
+
+<div id="edit-email" style="display:none;margin-bottom:16px">
+    <div class="form-card" style="max-width:100%;padding:28px">
+        <div class="section-title">Change Email</div>
+        <form method="POST" style="display:flex;gap:12px;align-items:flex-end">
+            <div class="form-group" style="flex:1">
+                <label>New Email</label>
+                <input type="email" name="new_email" placeholder="{{ user.email or 'you@example.com' }}"
+                       value="{{ user.email or '' }}">
+            </div>
+            <input type="hidden" name="action" value="update_email">
+            <button type="submit" class="btn-primary">Save</button>
+            <button type="button" onclick="toggleSection('edit-email')" class="btn-secondary">Cancel</button>
+        </form>
+    </div>
+</div>
+
+<div id="edit-password" style="display:none;margin-bottom:16px">
+    <div class="form-card" style="max-width:100%;padding:28px">
+        <div class="section-title">Change Password</div>
+        <form method="POST">
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;align-items:flex-end">
+                <div class="form-group">
+                    <label>Current Password</label>
+                    <input type="password" name="current_password" placeholder="••••••••" required autocomplete="current-password">
+                </div>
+                <div class="form-group">
+                    <label>New Password</label>
+                    <input type="password" name="new_password" id="new-pw" placeholder="••••••••"
+                           minlength="6" required autocomplete="new-password">
+                </div>
+                <div class="form-group">
+                    <label>Confirm New Password</label>
+                    <input type="password" name="confirm_password" id="confirm-pw" placeholder="••••••••"
+                           required autocomplete="new-password">
+                    <div class="error-message" id="pw-err">Passwords do not match.</div>
+                </div>
+            </div>
+            <input type="hidden" name="action" value="update_password">
+            <div style="display:flex;gap:12px;margin-top:16px">
+                <button type="submit" class="btn-primary">Update Password</button>
+                <button type="button" onclick="toggleSection('edit-password')" class="btn-secondary">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="edit-platforms" style="display:none;margin-bottom:16px">
+    <div class="bg-gray-900/60 backdrop-blur-lg border border-gray-800 rounded-2xl p-7 shadow-lg">
+        <div class="text-xl font-semibold text-white mb-6">Coding Platforms</div>
+        <form method="POST" class="space-y-6">
+            <div>
+                <label class="block text-gray-400 text-sm font-medium mb-2">LeetCode Username</label>
+                <input type="text" name="leetcode_username"
+                       placeholder="your LeetCode handle"
+                       value="{{ user.leetcode_username or '' }}"
+                       class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            </div>
+            <div>
+                <label class="block text-gray-400 text-sm font-medium mb-2">Codeforces Username</label>
+                <input type="text" name="codeforces_username"
+                       placeholder="your Codeforces handle"
+                       value="{{ user.codeforces_username or '' }}"
+                       class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            </div>
+            <input type="hidden" name="action" value="update_platforms">
+            <div class="flex gap-3 mt-4">
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors">Save Platforms</button>
+                <button type="button" onclick="toggleSection('edit-platforms')" class="bg-gray-700 hover:bg-gray-600 text-white px-6 py-2 rounded-lg transition-colors">Cancel</button>
+            </div>
+            <p class="text-xs text-gray-500 font-['Roboto'] mt-4">
+                We'll periodically fetch how many problems you solved today on these platforms and surface it on the leaderboard.
+            </p>
+        </form>
+    </div>
+</div>
+
+<!-- Danger zone -->
+<div style="margin-top:8px;padding:20px 24px;border:1px solid rgba(239,83,80,0.2);
+            border-radius:var(--radius-md);display:flex;justify-content:space-between;align-items:center">
+    <div>
+        <div style="font-size:12px;font-weight:700;color:#EF5350;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:3px">Sign Out</div>
+        <div style="font-size:12px;color:var(--text-muted);font-family:'Roboto',sans-serif">End your current session</div>
+    </div>
+    <a href="{{ url_for('logout') }}" class="btn-secondary"
+       style="font-size:12px;padding:9px 20px;color:#EF5350;border-color:rgba(239,83,80,0.3)">
+        Logout →
+    </a>
+</div>
+
+<script>
+function toggleSection(id) {
+    const el = document.getElementById(id);
+    const isHidden = el.style.display === 'none';
+    // Close all
+    ['edit-username','edit-email','edit-password','edit-platforms'].forEach(s => {
+        const node = document.getElementById(s);
+        if (node) node.style.display = 'none';
+    });
+    if (isHidden) el.style.display = 'block';
+}
+
+// Live password match check
+const newPw = document.getElementById('new-pw');
+const confPw = document.getElementById('confirm-pw');
+if (confPw) {
+    confPw.addEventListener('input', function() {
+        const group = this.closest('.form-group');
+        const err   = document.getElementById('pw-err');
+        if (this.value && this.value !== newPw.value) {
+            group.classList.add('error'); err.style.display = 'block';
+        } else {
+            group.classList.remove('error'); err.style.display = 'none';
+        }
+    });
+}
+
+{% if success_msg %}
+// Auto-open the right panel if there was a save
+{% endif %}
+</script>
+{% endblock %}

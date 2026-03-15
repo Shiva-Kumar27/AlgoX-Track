@@ -1,0 +1,225 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="dashboard-header flex justify-between items-start">
+    <div>
+        <h1 class="dashboard-title">Dashboard</h1>
+        <p class="dashboard-subtitle">// track your algorithmic growth</p>
+    </div>
+    <button onclick="refreshStats()"
+        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
+            </path>
+        </svg>
+        Refresh
+    </button>
+</div>
+
+<!-- Stats Grid (5 cards: Solved, Success, Streak, Score + XP/Level) -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-6">
+    <div
+        class="bg-gray-900/60 backdrop-blur-lg border border-gray-800 rounded-2xl p-6 shadow-lg hover:scale-[1.02] transition-transform duration-200">
+        <div class="text-gray-400 text-sm font-medium mb-2">Total Solved</div>
+        <div class="text-3xl font-bold text-white mb-1">{{ total_solved if total_solved else 0 }}</div>
+        <div class="text-gray-500 text-xs">problems</div>
+    </div>
+    <div
+        class="bg-gray-900/60 backdrop-blur-lg border border-gray-800 rounded-2xl p-6 shadow-lg hover:scale-[1.02] transition-transform duration-200">
+        <div class="text-gray-400 text-sm font-medium mb-2">Success Rate</div>
+        <div class="text-3xl font-bold text-white mb-1">{{ stats.success_rate if stats else 0 }}%</div>
+        <div class="text-gray-500 text-xs">of all attempts</div>
+    </div>
+    <div
+        class="bg-gray-900/60 backdrop-blur-lg border border-gray-800 rounded-2xl p-6 shadow-lg hover:scale-[1.02] transition-transform duration-200">
+        <div class="text-gray-400 text-sm font-medium mb-2">Current Streak</div>
+        <div class="text-3xl font-bold text-white mb-1">{{ stats.streak_days if stats else 0 }}</div>
+        <div class="text-gray-500 text-xs">days</div>
+    </div>
+    <div
+        class="bg-gray-900/60 backdrop-blur-lg border border-gray-800 rounded-2xl p-6 shadow-lg hover:scale-[1.02] transition-transform duration-200">
+        <div class="text-gray-400 text-sm font-medium mb-2">Today</div>
+        <div class="text-3xl font-bold text-white mb-1">{{ today_stats.total if today_stats else 0 }}</div>
+        <div class="text-gray-500 text-xs">solved today</div>
+    </div>
+    <!-- XP + Level card -->
+    <div
+        class="bg-gray-900/60 backdrop-blur-lg border border-gray-800 rounded-2xl p-6 shadow-lg hover:scale-[1.02] transition-transform duration-200">
+        <div class="flex justify-between items-start mb-3">
+            <div>
+                <div class="text-gray-400 text-sm font-medium">Level</div>
+                <div class="text-3xl font-bold text-white">{{ level_info.level }}</div>
+            </div>
+            <span class="bg-gray-800 text-gray-300 text-xs px-2 py-1 rounded-full">{{ achievement.name }}</span>
+        </div>
+        <div class="w-full bg-gray-800 rounded-full h-2 mb-2">
+            <div class="bg-gradient-to-r from-gray-600 to-gray-400 h-2 rounded-full transition-all duration-300"
+                data-pct="{{ level_info.progress_pct }}" style="width:0%"></div>
+        </div>
+        <div class="flex justify-between text-xs text-gray-500">
+            <span>{{ level_info.progress_xp }} XP</span>
+            <span>{{ level_info.needed_xp }} to next</span>
+        </div>
+    </div>
+</div>
+
+<!-- Platform Breakdown Cards -->
+{% if today_stats and (today_stats.leetcode > 0 or today_stats.codeforces > 0) %}
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6" x-data="{ expanded: true }">
+    <div
+        class="bg-gray-900/60 backdrop-blur-lg border border-gray-800 rounded-2xl p-6 shadow-lg hover:scale-[1.02] transition-transform duration-200">
+        <div class="flex items-center justify-between mb-4">
+            <div>
+                <div class="text-gray-400 text-sm font-medium">LeetCode</div>
+                <div class="text-2xl font-bold text-yellow-400">{{ today_stats.leetcode }}</div>
+            </div>
+            <div class="w-12 h-12 bg-yellow-900/30 rounded-full flex items-center justify-center">
+                <svg class="w-6 h-6 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
+                    <path
+                        d="M22.5 12.5c0 1.58-.875 2.95-2.148 3.65.175.425.275.875.275 1.35 0 2.25-1.825 4.075-4.075 4.075-.475 0-.925-.1-1.35-.275-.7 1.275-2.07 2.15-3.65 2.15-1.575 0-2.95-.875-3.65-2.15-.425.175-.875.275-1.35.275C2.825 21.5 1 19.675 1 17.425c0-.475.1-.925.275-1.35C.875 15.4 0 13.975 0 12.4c0-1.575.875-2.95 2.15-3.65C2.025 8.325 1.925 7.875 1.925 7.4c0-2.25 1.825-4.075 4.075-4.075.475 0 .925.1 1.35.275C7.5 2.325 8.875 1.45 10.45 1.45c1.575 0 2.95.875 3.65 2.15.425-.175.875-.275 1.35-.275 2.25 0 4.075 1.825 4.075 4.075 0 .475-.1.925-.275 1.35 1.275.7 2.15 2.07 2.15 3.65z" />
+                </svg>
+            </div>
+        </div>
+        <div class="text-gray-400 text-sm">solved today</div>
+    </div>
+    <div
+        class="bg-gray-900/60 backdrop-blur-lg border border-gray-800 rounded-2xl p-6 shadow-lg hover:scale-[1.02] transition-transform duration-200">
+        <div class="flex items-center justify-between mb-4">
+            <div>
+                <div class="text-gray-400 text-sm font-medium">Codeforces</div>
+                <div class="text-2xl font-bold text-red-400">{{ today_stats.codeforces }}</div>
+            </div>
+            <div class="w-12 h-12 bg-red-900/30 rounded-full flex items-center justify-center">
+                <svg class="w-6 h-6 text-red-400" fill="currentColor" viewBox="0 0 24 24">
+                    <path
+                        d="M4.5 7.5C4.5 6.67157 5.17157 6 6 6h12c.8284 0 1.5.67157 1.5 1.5v9c0 .8284-.6716 1.5-1.5 1.5H6c-.82843 0-1.5-.6716-1.5-1.5v-9zM6 7.5v9h12v-9H6z" />
+                </svg>
+            </div>
+        </div>
+        <div class="text-gray-400 text-sm">solved today</div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Today's Solved Problems -->
+{% if today_problems %}
+<div class="bg-gray-900/60 backdrop-blur-lg border border-gray-800 rounded-2xl p-6 shadow-lg mb-6">
+    <h3 class="text-xl font-semibold text-white mb-4">Today's Solved Problems</h3>
+    <div class="space-y-3">
+        {% for problem in today_problems %}
+        <div class="flex items-center justify-between p-3 bg-gray-800/50 rounded-lg">
+            <div class="flex items-center gap-3">
+                <div class="w-2 h-2 rounded-full
+                    {% if problem.platform == 'leetcode' %}bg-yellow-400{% else %}bg-red-400{% endif %}"></div>
+                <span class="text-white font-medium">{{ problem.title }}</span>
+                <span class="text-gray-400 text-sm">{{ problem.time }}</span>
+            </div>
+            <span
+                class="text-xs px-2 py-1 rounded-full
+                {% if problem.platform == 'leetcode' %}bg-yellow-900/30 text-yellow-400{% else %}bg-red-900/30 text-red-400{% endif %}">
+                {{ problem.platform|title }}
+            </span>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<!-- Smart Insights -->
+{% if insights %}
+<div class="mb-6" x-data="{ expanded: false }">
+    <div class="text-xl font-semibold text-white mb-3 flex items-center justify-between">
+        Smart Insights
+        <button @click="expanded = !expanded" class="text-gray-400 hover:text-white transition-colors">
+            <svg x-show="!expanded" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+            <svg x-show="expanded" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
+            </svg>
+        </button>
+    </div>
+    <div x-show="expanded" x-transition class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {% for ins in insights %}
+        <div
+            class="bg-gray-900/60 backdrop-blur-lg border border-gray-800 rounded-2xl p-6 shadow-lg hover:scale-[1.02] transition-transform duration-200">
+            <div class="text-lg font-semibold text-white mb-2">{{ ins.title }}</div>
+            <div class="text-gray-400 text-sm mb-3">{{ ins.message }}</div>
+            {% if ins.get('agi_score') %}
+            <div class="mt-3">
+                <div class="flex items-center gap-2">
+                    <span class="text-xl font-bold text-white">{{ ins.agi_score }}</span>
+                    <div class="flex-1 bg-gray-800 rounded-full h-2">
+                        <div class="bg-gradient-to-r from-blue-600 to-purple-600 h-2 rounded-full transition-all duration-300"
+                            data-score="{{ ins.agi_score }}" style="width:0%"></div>
+                    </div>
+                    <span class="text-xs text-gray-500">/100</span>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<!-- Recent Solves from Platforms -->
+<div class=bg-gray-900/60 backdrop-blur-lg border border-gray-800 rounded-2xl p-6 shadow-lg mb-6>
+    <h3 class=text-xl font-semibold text-white mb-4>Recent Solves <span class=text-sm text-gray-500 font-normal
+            ml-2>from linked platforms</span></h3>
+    <ul class=recent-solves-list id=recent-solves-list>
+        <li class=recent-solves-empty>Loading recent solves...</li>
+    </ul>
+</div>
+
+<!-- Charts -->
+<div class="charts-grid">
+    <div class="chart-card bg-gray-900/60 backdrop-blur-lg border border-gray-800 rounded-2xl p-6 shadow-lg">
+        <div class="flex items-baseline gap-2 mb-4">
+            <h3 class="text-xl font-semibold text-white">Topics</h3>
+            <span class="text-xs text-gray-500 font-normal">manual logs only</span>
+        </div>
+        <canvas id="topicChart"></canvas>
+    </div>
+    <div class="chart-card bg-gray-900/60 backdrop-blur-lg border border-gray-800 rounded-2xl p-6 shadow-lg">
+        <div class="flex items-baseline gap-2 mb-4">
+            <h3 class="text-xl font-semibold text-white">By Difficulty</h3>
+            <span class="text-xs text-gray-500 font-normal">manual logs only</span>
+        </div>
+        <canvas id="difficultyChart"></canvas>
+    </div>
+</div>
+
+<!-- Platform Activity -->
+<div class="bg-gray-900/60 backdrop-blur-lg border border-gray-800 rounded-2xl p-6 shadow-lg mb-6 mt-6">
+    <div class="flex items-baseline gap-2 mb-5">
+        <h3 class="text-xl font-semibold text-white">Platform Activity</h3>
+        <span class="text-xs text-gray-500 font-normal">all-time distribution</span>
+    </div>
+    <div id="platform-activity">
+        <div class="text-gray-500 text-sm">Loading...</div>
+    </div>
+</div>
+
+
+
+<!-- Heatmap -->
+<div class="bg-gray-900/60 backdrop-blur-lg border border-gray-800 rounded-2xl p-6 shadow-lg mb-6">
+    <h3 class="text-xl font-semibold text-white mb-4">Activity Heatmap</h3>
+    <div id="heatmap-container">
+        <div class="heatmap-months"></div>
+        <div class="heatmap-grid"></div>
+    </div>
+    <div class="flex items-center justify-center gap-2 mt-4">
+        <span class="text-gray-400 text-sm">Less</span>
+        <div class="w-3 h-3 bg-gray-700 rounded-sm"></div>
+        <div class="w-3 h-3 bg-gray-600 rounded-sm"></div>
+        <div class="w-3 h-3 bg-gray-500 rounded-sm"></div>
+        <div class="w-3 h-3 bg-gray-400 rounded-sm"></div>
+        <div class="w-3 h-3 bg-gray-300 rounded-sm"></div>
+        <span class="text-gray-400 text-sm">More</span>
+    </div>
+</div>
+
+{% endblock %}

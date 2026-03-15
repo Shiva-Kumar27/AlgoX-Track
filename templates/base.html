@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AlgoX Track</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script>
+      // Keep existing CSS-driven UI intact (avoid Tailwind base reset).
+      tailwind = { config: { corePlugins: { preflight: false } } }
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script defer src="https://unpkg.com/alpinejs"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">AlgoX <span>Track</span></div>
+            <ul class="nav-links">
+                {% if current_user %}
+                <li><a href="{{ url_for('index') }}">Dashboard</a></li>
+                <li><a href="{{ url_for('add_problem_route') }}">Add Problem</a></li>
+                <li><a href="{{ url_for('leaderboard') }}">Leaderboard</a></li>
+                <li><a href="{{ url_for('profile') }}">{{ current_user.username }}</a></li>
+                <li><a href="{{ url_for('logout') }}" style="color:var(--text-muted)">Logout</a></li>
+                {% else %}
+                <li><a href="{{ url_for('login') }}">Login</a></li>
+                <li><a href="{{ url_for('register') }}">Register</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="fixed top-16 left-1/2 transform -translate-x-1/2 z-50 flex flex-col gap-2 min-w-72 max-w-lg" x-data="{ show: true }" x-show="show" x-transition>
+        {% for category, message in messages %}
+        <div class="p-3 rounded-xl text-sm font-['Roboto'] text-center shadow-lg backdrop-blur-lg border
+            {% if category=='success' %}bg-green-900/20 border-green-600/40 text-green-400{% elif category=='info' %}bg-gray-900/60 border-gray-700 text-gray-300{% else %}bg-red-900/20 border-red-600/40 text-red-400{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <script src="{{ url_for('static', filename='main.js') }}"></script>
+    <style>
+        @keyframes fadeSlideDown {
+            from { opacity:0; transform:translateY(-8px); }
+            to   { opacity:1; transform:translateY(0); }
+        }
+    </style>
+    <script>
+        // Auto-dismiss flash messages after 3s
+        setTimeout(() => {
+            const flashContainer = document.querySelector('[x-data*="show"]');
+            if (flashContainer && flashContainer.__x) {
+                flashContainer.__x.$data.show = false;
+            }
+        }, 3000);
+    </script>
+</body>
+</html>

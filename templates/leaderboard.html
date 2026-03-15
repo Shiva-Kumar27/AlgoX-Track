@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="leaderboard-header">
+    <h1>Leaderboard</h1>
+    <p>// ranked by weighted score</p>
+</div>
+
+<div class="table-container" style="margin-top:0">
+    <table id="leaderboard-table">
+        <thead>
+            <tr>
+                <th>Rank</th>
+                <th>User</th>
+                <th>Solved</th>
+                <th>Easy</th>
+                <th>Medium</th>
+                <th>Hard</th>
+                <th>Score</th>
+                <th>Streak</th>
+                <th>Today</th>
+                <th>Success %</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for rank in rankings %}
+            <tr>
+                <td><span class="rank-badge">{{ rank.badge }}</span></td>
+                <td style="color:var(--text-primary);font-weight:700;font-size:14px">
+                    {{ rank.username }}
+                    {% if rank.achievement %}
+                    <span class="xp-badge" style="margin-left:8px">{{ rank.achievement.name }}</span>
+                    {% endif %}
+                </td>
+                <td style="font-family:'Roboto',sans-serif">{{ rank.total_solved }}</td>
+                <td class="difficulty-easy">{{ rank.easy_solved }}</td>
+                <td class="difficulty-medium">{{ rank.medium_solved }}</td>
+                <td class="difficulty-hard">{{ rank.hard_solved }}</td>
+                <td style="font-family:'Roboto',sans-serif;color:var(--text-primary);font-weight:600">{{ rank.score }}</td>
+                <td>
+                    {% if rank.streak_days > 0 %}
+                    <span style="color:{% if rank.streak_days >= 7 %}var(--warning){% else %}var(--text-secondary){% endif %}">
+                        {{ rank.streak_days }}d streak
+                    </span>
+                    {% else %}
+                    <span style="color:var(--text-muted)">—</span>
+                    {% endif %}
+                </td>
+                <td style="font-family:'Roboto',sans-serif;color:var(--text-secondary)">
+                    {{ rank.today_solved or 0 }}
+                </td>
+                <td style="font-family:'Roboto',sans-serif">{{ rank.success_rate }}%</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="load-more-container">
+    <button id="load-more" class="btn-load-more">Load More</button>
+</div>
+{% endblock %}

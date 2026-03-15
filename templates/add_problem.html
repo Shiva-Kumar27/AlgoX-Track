@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="form-card">
+    <h2>Add Problem</h2>
+    <p class="form-subtitle">Record a new problem attempt</p>
+
+    <form method="POST" class="problem-form">
+        <div class="form-row">
+            <div class="form-group">
+                <label for="title">Problem Title *</label>
+                <input type="text" id="title" name="title" placeholder="e.g., Two Sum" required>
+                <div class="error-message">Title is required</div>
+            </div>
+            <div class="form-group">
+                <label for="topic">Topic *</label>
+                <input type="text" id="topic" name="topic" placeholder="e.g., Arrays" required>
+                <div class="error-message">Topic is required</div>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="difficulty">Difficulty *</label>
+                <select id="difficulty" name="difficulty" required>
+                    <option value="" disabled selected>Select difficulty</option>
+                    <option value="Easy">Easy</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Hard">Hard</option>
+                </select>
+                <div class="error-message">Difficulty is required</div>
+            </div>
+            <div class="form-group">
+                <label for="platform">Platform</label>
+                <input type="text" id="platform" name="platform" placeholder="e.g., LeetCode">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="problem_url">Problem URL</label>
+            <input type="url" id="problem_url" name="problem_url" placeholder="https://...">
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="result">Result *</label>
+                <select id="result" name="result" required>
+                    <option value="" disabled selected>Select result</option>
+                    <option value="Solved">Solved</option>
+                    <option value="Attempted">Attempted</option>
+                    <option value="Revisit">Revisit</option>
+                </select>
+                <div class="error-message">Result is required</div>
+            </div>
+            <div class="form-group">
+                <label for="time_taken">Time Taken (minutes)</label>
+                <input type="number" id="time_taken" name="time_taken" min="0" placeholder="e.g., 30">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="notes">Notes</label>
+            <textarea id="notes" name="notes" rows="3" placeholder="Any observations..."></textarea>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">Add Problem</button>
+            <button type="reset" class="btn-secondary" onclick="return confirmReset()">Reset</button>
+        </div>
+    </form>
+</div>
+
+<script>
+function confirmReset() {
+    return confirm('Clear all fields?');
+}
+</script>
+{% endblock %}

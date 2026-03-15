@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login — AlgoX Track</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+        .auth-wrap { width: 100%; max-width: 420px; padding: 24px; }
+        .auth-logo {
+            font-size: 13px; font-weight: 700; letter-spacing: 0.1em;
+            text-transform: uppercase; color: var(--text-muted);
+            font-family: 'Roboto', sans-serif; margin-bottom: 40px; text-align: center;
+        }
+        .auth-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            box-shadow: var(--shadow-lg);
+        }
+        .auth-title {
+            font-size: 26px; font-weight: 800; letter-spacing: -0.02em;
+            color: var(--text-primary); margin-bottom: 6px;
+        }
+        .auth-subtitle {
+            font-size: 12px; color: var(--text-muted);
+            font-family: 'Roboto', sans-serif; margin-bottom: 32px;
+        }
+        .auth-form { display: flex; flex-direction: column; gap: 18px; }
+        .auth-error {
+            background: rgba(239,83,80,0.1);
+            border: 1px solid rgba(239,83,80,0.3);
+            color: #EF5350;
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            font-family: 'Roboto', sans-serif;
+        }
+        .auth-footer {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 12px;
+            color: var(--text-muted);
+            font-family: 'Roboto', sans-serif;
+        }
+        .auth-footer a { color: var(--text-secondary); text-decoration: none; }
+        .auth-footer a:hover { color: var(--text-primary); }
+        .btn-auth {
+            background: var(--text-primary);
+            color: var(--bg-deep);
+            padding: 13px;
+            border-radius: var(--radius-xl);
+            border: none;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Roboto', sans-serif;
+            letter-spacing: 0.04em;
+            transition: background var(--transition), transform var(--transition);
+            width: 100%;
+        }
+        .btn-auth:hover { background: var(--accent); transform: scale(0.99); }
+    </style>
+</head>
+<body>
+    <div class="auth-wrap">
+        <div class="auth-logo">AlgoX Track</div>
+        <div class="auth-card">
+            <div class="auth-title">Welcome back</div>
+            <div class="auth-subtitle">// sign in to your account</div>
+
+            {% if error %}
+            <div class="auth-error">{{ error }}</div>
+            {% endif %}
+
+            <form method="POST" class="auth-form" style="margin-top: {% if error %}16px{% else %}0{% endif %}">
+                <input type="hidden" name="next" value="{{ next }}">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" name="username" placeholder="your_username"
+                           autocomplete="username" required autofocus>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" name="password" placeholder="••••••••"
+                           autocomplete="current-password" required>
+                </div>
+                <button type="submit" class="btn-auth">Sign In</button>
+            </form>
+        </div>
+        <div class="auth-footer">
+            No account? <a href="{{ url_for('register') }}">Register here</a>
+        </div>
+    </div>
+</body>
+</html>
