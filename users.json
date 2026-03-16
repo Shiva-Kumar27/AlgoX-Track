@@ -1,0 +1,20 @@
+[
+  {
+    "user_id": 1,
+    "username": "default_user",
+    "leetcode_username": null,
+    "codeforces_username": null
+  },
+  {
+    "user_id": 2,
+    "username": "Xin",
+    "leetcode_username": null,
+    "codeforces_username": null
+  },
+  {
+    "user_id": 3,
+    "username": "San",
+    "leetcode_username": "24r01a67j5",
+    "codeforces_username": "24r01a67j5"
+  }
+]

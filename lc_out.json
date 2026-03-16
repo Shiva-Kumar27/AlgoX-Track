@@ -1,0 +1,86 @@
+{
+  "data": {
+    "recentSubmissionList": [
+      {
+        "titleSlug": "two-sum",
+        "title": "Two Sum",
+        "statusDisplay": "Accepted",
+        "timestamp": "1770997695"
+      },
+      {
+        "titleSlug": "sort-an-array",
+        "title": "Sort an Array",
+        "statusDisplay": "Accepted",
+        "timestamp": "1765281515"
+      },
+      {
+        "titleSlug": "two-sum",
+        "title": "Two Sum",
+        "statusDisplay": "Accepted",
+        "timestamp": "1765117283"
+      },
+      {
+        "titleSlug": "find-all-numbers-disappeared-in-an-array",
+        "title": "Find All Numbers Disappeared in an Array",
+        "statusDisplay": "Accepted",
+        "timestamp": "1765117077"
+      },
+      {
+        "titleSlug": "find-all-numbers-disappeared-in-an-array",
+        "title": "Find All Numbers Disappeared in an Array",
+        "statusDisplay": "Accepted",
+        "timestamp": "1765116949"
+      },
+      {
+        "titleSlug": "contains-duplicate",
+        "title": "Contains Duplicate",
+        "statusDisplay": "Accepted",
+        "timestamp": "1765116133"
+      },
+      {
+        "titleSlug": "contains-duplicate",
+        "title": "Contains Duplicate",
+        "statusDisplay": "Accepted",
+        "timestamp": "1765116022"
+      },
+      {
+        "titleSlug": "missing-number",
+        "title": "Missing Number",
+        "statusDisplay": "Accepted",
+        "timestamp": "1765115998"
+      }
+    ],
+    "recentAcSubmissionList": [
+      {
+        "titleSlug": "two-sum",
+        "title": "Two Sum",
+        "timestamp": "1770997695"
+      },
+      {
+        "titleSlug": "sort-an-array",
+        "title": "Sort an Array",
+        "timestamp": "1765281515"
+      },
+      {
+        "titleSlug": "two-sum",
+        "title": "Two Sum",
+        "timestamp": "1765117283"
+      },
+      {
+        "titleSlug": "find-all-numbers-disappeared-in-an-array",
+        "title": "Find All Numbers Disappeared in an Array",
+        "timestamp": "1765117077"
+      },
+      {
+        "titleSlug": "contains-duplicate",
+        "title": "Contains Duplicate",
+        "timestamp": "1765116133"
+      },
+      {
+        "titleSlug": "missing-number",
+        "title": "Missing Number",
+        "timestamp": "1765115998"
+      }
+    ]
+  }
+}

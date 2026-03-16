@@ -1,0 +1,83 @@
+{
+  "daily_stats": [
+    {
+      "id": 1,
+      "user_id": 3,
+      "platform": "leetcode",
+      "problems_solved": 1,
+      "date": "2026-03-13"
+    },
+    {
+      "id": 3,
+      "user_id": 3,
+      "platform": "leetcode",
+      "problems_solved": 5,
+      "date": "2026-03-14"
+    },
+    {
+      "id": 4,
+      "user_id": 3,
+      "platform": "leetcode",
+      "problems_solved": 2,
+      "date": "2026-03-15"
+    },
+    {
+      "id": 5,
+      "user_id": 3,
+      "platform": "codeforces",
+      "problems_solved": 0,
+      "date": "2026-03-15"
+    }
+  ],
+  "recent_problems": [
+    {
+      "id": 104,
+      "user_id": 3,
+      "platform": "leetcode",
+      "title": "Container With Most Water",
+      "date": "2026-03-15"
+    },
+    {
+      "id": 105,
+      "user_id": 3,
+      "platform": "leetcode",
+      "title": "First Unique Even Element",
+      "date": "2026-03-15"
+    },
+    {
+      "id": 86,
+      "user_id": 3,
+      "platform": "leetcode",
+      "title": "Two Sum",
+      "date": "2026-03-14"
+    },
+    {
+      "id": 87,
+      "user_id": 3,
+      "platform": "leetcode",
+      "title": "Check if Binary String Has at Most One Segment of Ones",
+      "date": "2026-03-14"
+    },
+    {
+      "id": 88,
+      "user_id": 3,
+      "platform": "leetcode",
+      "title": "Merge Two Sorted Lists",
+      "date": "2026-03-14"
+    },
+    {
+      "id": 89,
+      "user_id": 3,
+      "platform": "leetcode",
+      "title": "Minimum Capacity Box",
+      "date": "2026-03-14"
+    },
+    {
+      "id": 90,
+      "user_id": 3,
+      "platform": "leetcode",
+      "title": "Move Zeroes",
+      "date": "2026-03-14"
+    }
+  ]
+}
